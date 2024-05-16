@@ -1,0 +1,42 @@
+version: '3.7'
+
+networks:
+  webnet:
+  db_network:
+
+services:
+  backend:
+    container_name: image-ticket-app-backend
+    image: django-docker:0.0.1
+    restart: on-failure
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - .:/app
+    build:
+      dockerfile: Dockerfile.local
+    env_file: .env
+    networks:
+      - webnet
+      - db_network
+    depends_on:
+      image-ticket-db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  image-ticket-db:
+    container_name: image-ticket-db-postgresql
+    image: postgres:13-alpine
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./setup/docker/postgres:/var/lib/postgresql/data
+    env_file: .env
+    ports:
+      - '5432:5432'
+    networks:
+      - db_network
