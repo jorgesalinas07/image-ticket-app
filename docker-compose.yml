@@ -40,3 +40,17 @@ services:
       - '5432:5432'
     networks:
       - db_network
+
+  test:
+    container_name: image-ticket-app-test
+    image: django-docker:0.0.1
+    command: ["pytest", "--maxfail=1", "--disable-warnings"]
+    volumes:
+      - .:/app
+    env_file: .env
+    networks:
+      - webnet
+      - db_network
+    depends_on:
+      image-ticket-db:
+        condition: service_healthy
