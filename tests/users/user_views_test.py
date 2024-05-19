@@ -49,7 +49,9 @@ def test_signup_endpoint_should_return_400_status_when_user_invalid_form(client)
     response = client.post(f'{endpoint}/signup/', {'username': 'newuser'})
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-def test_test_token_should_return_200_status_when_authentication_was_successful(client, user):
+def test_test_token_should_return_200_status_when_authentication_was_successful(
+    client, user
+):
     token = Token.objects.get(user__username='testuser')
     client.credentials(HTTP_AUTHORIZATION='token ' + token.key)
     response = client.get(f'{endpoint}/test_token/')

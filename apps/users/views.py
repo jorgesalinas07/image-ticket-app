@@ -5,23 +5,17 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 
 from apps.users.serializers import UserSerializer
-from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from apps.users.types import LoginSuccessResponse, SignUpSuccessResponse
 from apps.utils.common.types import GeneralErrorResponse
+from apps.utils.constants import token_param
 
-token_param = openapi.Parameter(
-    'Authorization',
-    openapi.IN_HEADER,
-    description="token <insert-token>",
-    type=openapi.TYPE_STRING,
-    required=True
-)
 
 @swagger_auto_schema(
     method='post',
@@ -41,9 +35,7 @@ token_param = openapi.Parameter(
 )
 @api_view(['POST'])
 def login(request):
-    print(request.data)
     user = get_object_or_404(User, username=request.data['username'])
-    print("user", user)
     if not user.check_password(request.data['password']):
         return GeneralErrorResponse("Invalid password", status.HTTP_404_NOT_FOUND)
     token, _ = Token.objects.get_or_create(user=user)

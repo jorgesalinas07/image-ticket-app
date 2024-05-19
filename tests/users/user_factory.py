@@ -6,5 +6,5 @@ from django.contrib.auth.models import User
 @pytest.fixture
 def user(db):
     user = User.objects.create_user(username='testuser', password='test_pass')
-    Token.objects.create(user=user)
-    return user
+    token = Token.objects.create(user=user)
+    return user, token
