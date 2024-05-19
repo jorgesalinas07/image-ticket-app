@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 
 class TicketStatus(models.TextChoices):
@@ -5,9 +6,6 @@ class TicketStatus(models.TextChoices):
     COMPLETED = 'COMPLETED'
 
 class Ticket(models.Model):
-    number_of_images = models.IntegerField(
-        blank=False,
-    )
     status = models.CharField(
         max_length=100,
         choices=TicketStatus.choices,
@@ -18,4 +16,13 @@ class Ticket(models.Model):
         on_delete=models.CASCADE,
         blank=False,
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        default=timezone.now,
+    )
+    loaded_image_quantity = models.IntegerField(
+        default=0,
+        blank=False,
+    )
+    max_image_quantity = models.IntegerField(
+        blank=False,
+    )

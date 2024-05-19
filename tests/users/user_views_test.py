@@ -6,6 +6,8 @@ from apps.users.types import LoginSuccessResponse, SignUpSuccessResponse
 
 endpoint = '/users'
 
+## Replace test with auth client to test authenticated endpoints
+
 def test_login_endpoint_should_return_200_status_when_login_successful(client, user):
     response = client.post(f'{endpoint}/login/', {'username': 'testuser', 'password': 'test_pass'})
     assert isinstance(response, LoginSuccessResponse)
