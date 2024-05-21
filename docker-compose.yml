@@ -3,6 +3,7 @@ version: '3.7'
 networks:
   webnet:
   db_network:
+  redisnet:
 
 services:
   backend:
@@ -18,6 +19,7 @@ services:
     networks:
       - webnet
       - db_network
+      - redisnet
     depends_on:
       image-ticket-db:
         condition: service_healthy
@@ -54,3 +56,26 @@ services:
     depends_on:
       image-ticket-db:
         condition: service_healthy
+
+  redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - ./setup/docker/redis-data:/data
+    networks:
+      - redisnet
+    command: redis-server
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: dockerfile.celery_worker
+    command: celery -A config worker --loglevel=info
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+    networks:
+      - webnet
+      - redisnet
+      - db_network

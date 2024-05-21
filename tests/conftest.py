@@ -1,2 +1,2 @@
 from .users.user_factory import user
-from .client_factory import client
+from .client_factory import client, auth_client
