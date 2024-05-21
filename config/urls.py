@@ -8,7 +8,7 @@ from drf_yasg import openapi
 
 
 def home(request):
-    return HttpResponse("Hello, World!")
+    return HttpResponse("Please go to /docs/ to view the API documentation")
 
 
 schema_view = get_schema_view(
