@@ -6,7 +6,6 @@ from unittest.mock import patch
 from apps.image_tickets.models import Ticket
 from apps.image_tickets.types import (
     CreateTicketSuccessResponse,
-    UploadImageSuccessResponse,
 )
 
 from rest_framework import status
@@ -14,7 +13,7 @@ from rest_framework import status
 from apps.utils.common.types import GeneralErrorResponse
 
 
-endpoint = "/tickets"
+endpoint = "/tickets/"
 
 
 def test_create_ticket_endpoint_should_return_201_status_when_ticket_creation_was_successful(
@@ -94,7 +93,7 @@ def test_get_paginated_tickets_should_return_tickets_in_timeframe_when_date_filt
 ):
     user, token = user
     client.credentials(HTTP_AUTHORIZATION="token " + token.key)
-    Ticket.objects.create(  ## Move to ticket factory
+    Ticket.objects.create(  ## TODO: Move to ticket factory
         status="PENDING",
         created_by=user,
         max_image_quantity=2,

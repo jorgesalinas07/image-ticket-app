@@ -20,10 +20,10 @@ class UploadImageSuccessResponse(Response):
 
 class GetPaginatedTicketsSuccessResponse(Response):
     def __init__(self, tickets: List[dict]):
-        super().__init__(status=status.HTTP_200_OK, data={tickets})
+        super().__init__(status=status.HTTP_200_OK, data=tickets)
 
 
-page_param = openapi.Parameter(  ## Move this to utils or somewhere else
+page_param = openapi.Parameter(
     "page",
     in_=openapi.IN_QUERY,
     description="Page",

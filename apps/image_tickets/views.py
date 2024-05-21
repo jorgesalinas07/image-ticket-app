@@ -18,7 +18,6 @@ from apps.image_tickets.tasks import (
 )
 from apps.image_tickets.types import (
     CreateTicketSuccessResponse,
-    GetPaginatedTicketsSuccessResponse,
     UploadImageSuccessResponse,
     page_param,
     per_page_param,
@@ -114,7 +113,7 @@ def get_paginated_tickets(request):
     tickets = paginate_object(tickets, page, per_page)
 
     serializer = TicketSerializer(tickets, many=True)
-    return GetPaginatedTicketsSuccessResponse(serializer.data)
+    return Response(serializer.data)
 
 
 @swagger_auto_schema(
