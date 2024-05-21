@@ -1,9 +1,11 @@
 from django.utils import timezone
 from django.db import models
 
+
 class TicketStatus(models.TextChoices):
-    PENDING = 'PENDING'
-    COMPLETED = 'COMPLETED'
+    PENDING = "PENDING"
+    COMPLETED = "COMPLETED"
+
 
 class Ticket(models.Model):
     status = models.CharField(
@@ -12,7 +14,7 @@ class Ticket(models.Model):
         default=TicketStatus.PENDING,
     )
     created_by = models.ForeignKey(
-        'auth.User',
+        "auth.User",
         on_delete=models.CASCADE,
         blank=False,
     )

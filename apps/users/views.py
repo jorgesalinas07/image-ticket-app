@@ -18,67 +18,69 @@ from apps.utils.constants import token_param
 
 
 @swagger_auto_schema(
-    method='post',
+    method="post",
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'username': openapi.Schema(type=openapi.TYPE_STRING),
-            'password': openapi.Schema(type=openapi.FORMAT_PASSWORD),
+            "username": openapi.Schema(type=openapi.TYPE_STRING),
+            "password": openapi.Schema(type=openapi.FORMAT_PASSWORD),
         },
-        required=['username', 'password']
+        required=["username", "password"],
     ),
     responses={
-        status.HTTP_200_OK: 'Login successful',
-        status.HTTP_404_NOT_FOUND: 'User not Found',
+        status.HTTP_200_OK: "Login successful",
+        status.HTTP_404_NOT_FOUND: "User not Found",
     },
-    tags=['users'],
+    tags=["users"],
 )
-@api_view(['POST'])
+@api_view(["POST"])
 def login(request):
-    user = get_object_or_404(User, username=request.data['username'])
-    if not user.check_password(request.data['password']):
+    user = get_object_or_404(User, username=request.data["username"])
+    if not user.check_password(request.data["password"]):
         return GeneralErrorResponse("Invalid password", status.HTTP_404_NOT_FOUND)
     token, _ = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
     return LoginSuccessResponse(token.key, serializer.data)
 
+
 @swagger_auto_schema(
-    method='post',
+    method="post",
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'username': openapi.Schema(type=openapi.TYPE_STRING),
-            'password': openapi.Schema(type=openapi.FORMAT_PASSWORD),
-            'email': openapi.Schema(type=openapi.FORMAT_EMAIL),
-            'first_name': openapi.Schema(type=openapi.TYPE_STRING),
-            'last_name': openapi.Schema(type=openapi.TYPE_STRING),
+            "username": openapi.Schema(type=openapi.TYPE_STRING),
+            "password": openapi.Schema(type=openapi.FORMAT_PASSWORD),
+            "email": openapi.Schema(type=openapi.FORMAT_EMAIL),
+            "first_name": openapi.Schema(type=openapi.TYPE_STRING),
+            "last_name": openapi.Schema(type=openapi.TYPE_STRING),
         },
-        required=['username', 'password']
+        required=["username", "password"],
     ),
     responses={
-        status.HTTP_201_CREATED: 'Created',
-        status.HTTP_400_BAD_REQUEST: 'Bad Request',
+        status.HTTP_201_CREATED: "Created",
+        status.HTTP_400_BAD_REQUEST: "Bad Request",
     },
-    tags=['users'],
+    tags=["users"],
 )
-@api_view(['POST'])
+@api_view(["POST"])
 def signup(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        user = User.objects.get(username=request.data['username'])
-        user.set_password(request.data['password'])
+        user = User.objects.get(username=request.data["username"])
+        user.set_password(request.data["password"])
         user.save()
         token = Token.objects.create(user=user)
         return SignUpSuccessResponse(token.key, serializer.data)
     return GeneralErrorResponse(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
+
 @swagger_auto_schema(
-    method='get',
+    method="get",
     manual_parameters=[token_param],
-    tags=['users'],
+    tags=["users"],
 )
-@api_view(['GET'])
+@api_view(["GET"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):
